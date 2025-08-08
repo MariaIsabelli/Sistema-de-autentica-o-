@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de Usuário</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Google Fonts (Poppins) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.5);
+      border-color: #2575fc;
+    }
+    .input-group-text {
+      background-color: #2575fc;
+      color: white;
+      border-radius: 0.5rem 0 0 0.5rem;
+      border: none;
+    }
+    .btn-primary {
+      background-color: #2575fc;
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      padding: 0.6rem;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #1a52c3;
+    }
+    /* Mensagens de erro customizadas */
+    .invalid-feedback {
+      display: block;
+      font-size: 0.85rem;
+      color: #dc3545; /* vermelho Bootstrap */
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card p-4" style="width: 380px;">
+    <h2 class="text-center mb-4" style="color:#2575fc;">Cadastro de Usuário</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" id="cadastroForm" novalidate>
+      <div class="mb-3">
+        <label for="nome" class="form-label">Nome</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+          <input type="text" id="nome" name="nome" class="form-control" placeholder="Seu nome completo" required />
+        </div>
+        <div class="invalid-feedback" id="error-nome"></div>
+      </div>
+
+      <div class="mb-3">
+        <label for="login" class="form-label">Login</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+          <input type="text" id="login" name="login" class="form-control" placeholder="Seu login único" required />
+        </div>
+        <div class="invalid-feedback" id="error-login"></div>
+      </div>
+
+      <div class="mb-3">
+        <label for="senha" class="form-label">Senha</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" id="senha" name="senha" class="form-control" placeholder="Senha segura" required minlength="6" />
+        </div>
+        <div class="invalid-feedback" id="error-senha"></div>
+      </div>
+
+      <div class="mb-4">
+        <label for="confirmaSenha" class="form-label">Confirme a Senha</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" id="confirmaSenha" name="confirmaSenha" class="form-control" placeholder="Digite novamente a senha" required />
+        </div>
+        <div class="invalid-feedback" id="error-confirmaSenha"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+    </form>
+  </div>
+
+  <!-- Bootstrap JS Bundle (Popper + JS) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const form = document.getElementById('cadastroForm');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Evita envio automático
+
+      // Limpa erros
+      ['nome', 'login', 'senha', 'confirmaSenha'].forEach(id => {
+        document.getElementById('error-' + id).textContent = '';
+      });
+
+      let valido = true;
+
+      const nome = document.getElementById('nome');
+      const login = document.getElementById('login');
+      const senha = document.getElementById('senha');
+      const confirmaSenha = document.getElementById('confirmaSenha');
+
+      if (nome.value.trim() === '') {
+        document.getElementById('error-nome').textContent = 'Por favor, preencha o nome.';
+        valido = false;
+      }
+      if (login.value.trim() === '') {
+        document.getElementById('error-login').textContent = 'Por favor, preencha o login.';
+        valido = false;
+      }
+      if (senha.value.length < 6) {
+        document.getElementById('error-senha').textContent = 'A senha deve ter ao menos 6 caracteres.';
+        valido = false;
+      }
+      if (confirmaSenha.value !== senha.value) {
+        document.getElementById('error-confirmaSenha').textContent = 'As senhas não conferem.';
+        valido = false;
+      }
+
+      if (valido) {
+        form.submit(); // Envia formulário se estiver tudo OK
+      }
+    });
+  </script>
+</body>
+</html>
